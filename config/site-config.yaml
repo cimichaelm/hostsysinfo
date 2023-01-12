@@ -1,0 +1,65 @@
+
+version: 0.0.1
+outputdir: /var/spool/sysinfo
+probes:
+  dmidecode:
+    command: dmidecode
+    arguments:
+    become: true
+    enable: false
+    outfile: dmidecode.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+  dmidecode-bios:
+    command: dmidecode
+    arguments: --type bios
+    become: true
+    enable: true
+    outfile: dmidecode-bios.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+    prefix: bios
+  dmidecode-system:
+    command: dmidecode
+    arguments: --type system
+    become: true
+    enable: true
+    outfile: dmidecode-system.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+    prefix: system
+  dmidecode-baseboard:
+    command: dmidecode
+    arguments: --type baseboard
+    become: true
+    enable: true
+    outfile: dmidecode-baseboard.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+    prefix: baseboard
+  dmidecode-chassis:
+    command: dmidecode
+    arguments: --type chassis
+    become: true
+    enable: true
+    outfile: dmidecode-chassis.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+    prefix: chassis
+  dmidecode-processor:
+    command: dmidecode
+    arguments: --type processor
+    become: true
+    enable: true
+    outfile: dmidecode-processor.txt
+    pattern: '([\w\d][\w\d\s]+[\w\d]):\s+(.+)$'
+    prefix: processor
+  lspci:
+    command: lspci
+    arguments:
+    become: true
+    enable: false
+    outfile: lspci.txt
+    pattern:
+  nmap:
+    command: nmap
+    arguments:
+    become: true
+    enable: false
+    outfile:
+    pattern:
