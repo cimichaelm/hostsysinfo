@@ -1,0 +1,12 @@
+Source: hostsysinfo
+Maintainer: Mike <test@test.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Section: utils
+
+Package: hostsysinfo
+Priority: optional
+Architecture: amd64
+Description: Gather Host system info and store/retrieve for monitoring agents
+ Can run as cron job
+Homepage: https://github.com/cimichaelm/hostsysinfo
