@@ -32,6 +32,9 @@ type probeinfo_t struct {
 type config_t struct {
 	Version   string
 	Outputdir string
+	User	  string
+	Group	  string
+	Lowercase bool
 	Probes    map[string]probeinfo_t
 }
 
@@ -52,6 +55,7 @@ var (
 	flg_generate = flag.Bool("generate", false, "Generate data files")
 	opt_get = flag.String("get", "", "Get data value")
 	flg_showkey = flag.Bool("showkey", false, "Show Key")
+	flg_lowercase = flag.Bool("lowercase", false, "Use lowercase")
 
 	params = make(map[string]string)
 )
@@ -137,6 +141,11 @@ func process_generate(obj *objtype, data config_t) {
 	display_debug_message(obj, msg)
 	create_directory(data.Outputdir, mode)
 	clear_params()
+	
+	if data.Lowercase {
+		*flg_lowercase = true
+	}
+	
 	for k, v := range data.Probes {
 		if v.Enable {
 			pattern = v.Pattern
@@ -266,6 +275,7 @@ func sudocmd(prog string, arguments string, filename string, pattern string, pre
 // match pattern in string
 func match_param(prefix string, pattern string, line string) {
 	var key, value string
+	
 	sep := "."
 	
 	if len(pattern) > 0 {
@@ -273,7 +283,7 @@ func match_param(prefix string, pattern string, line string) {
 		match := re.FindStringSubmatch(line)
 		if match != nil {
 			if len(match) > 2 {
-				key = prefix + sep + match[1]
+				key = strings.ToLower(prefix + sep + match[1])
 				value = match[2]
 				// fmt.Printf("%s: %s\n", key, value)
 				add_param(key, value)

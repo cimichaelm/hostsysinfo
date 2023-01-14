@@ -1,6 +1,9 @@
 
 version: 0.0.1
 outputdir: /var/spool/sysinfo
+user: zabbix
+group: zabbix
+lowercase: true
 probes:
   dmidecode:
     command: dmidecode
