@@ -14,6 +14,9 @@ import (
 	"io/ioutil"
 	"log"
 	"gopkg.in/yaml.v3"
+	"runtime"
+	"os/user"
+	"strconv"
 )
 
 //
@@ -41,6 +44,18 @@ func create_directory(dirpath string, mode os.FileMode) bool {
 func directory_exists(dirpath string) bool {
 
     _, err := os.Stat(dirpath)
+    if os.IsNotExist(err) {
+       return false
+    }
+    return true
+}
+
+//
+// check if file exists
+//
+func file_exists(path string) bool {
+
+    _, err := os.Stat(path)
     if os.IsNotExist(err) {
        return false
     }
@@ -149,3 +164,60 @@ func display_message(msg string) {
 	fmt.Printf("%s\n", msg)
 }
 
+//
+func set_file_permissions(filename string, mode os.FileMode) {
+
+	if file_exists(filename) {
+
+		// Change permissions Linux.
+		err := os.Chmod(filename, mode)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+//
+// set group of file	 
+//
+func set_file_group(filename string, group string) {
+
+	var gid int
+	
+	if file_exists(filename) {
+		gid = lookup_gid(group)
+		if gid >= 0 {
+			// Change file ownership.
+			err := os.Chown(filename, -1, gid)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}
+}
+
+func lookup_gid(group string) int {
+
+	if runtime.GOOS != "windows" {
+	    ginfo, err := user.LookupGroup(group)
+	    if err != nil {
+	        return -1
+	    }
+	    gid, _ := strconv.Atoi(ginfo.Gid)
+		return gid
+	}
+	return -1
+}
+	
+func lookup_uid(username string) int {
+	
+	if runtime.GOOS != "windows" {
+	    uinfo, err := user.Lookup(username)
+	    if err != nil {
+	        return -1
+	    }
+	    uid, _ := strconv.Atoi(uinfo.Uid)
+		return uid
+	}
+	return -1
+}

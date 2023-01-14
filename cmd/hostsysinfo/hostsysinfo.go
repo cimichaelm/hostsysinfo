@@ -126,20 +126,29 @@ func process(obj *objtype, data config_t) {
 
 func process_generate(obj *objtype, data config_t) {
 
-	var msg, prog, arguments, pattern, prefix string
+	var msg, prog, arguments, pattern, prefix, group string
 	var mode os.FileMode
 	var r int
+	var flg_setgroup bool
 	
+	flg_setgroup = false	
 	pattern = ""
 	prog = ""
 	arguments = ""
 	mode = 0750
-	
+	group = data.Group
+	if len(group) > 0 {
+		flg_setgroup = true
+	}
 	msg = fmt.Sprintf("Version: %s", data.Version)
 	display_debug_message(obj, msg)
 	msg = fmt.Sprintf("Outputdir: %s", data.Outputdir)
 	display_debug_message(obj, msg)
 	create_directory(data.Outputdir, mode)
+	if flg_setgroup {
+		set_file_group(data.Outputdir, group)
+	}
+	
 	clear_params()
 	
 	if data.Lowercase {
@@ -168,6 +177,10 @@ func process_generate(obj *objtype, data config_t) {
 	}
 	paramfile := get_paramfile(data)
 	write_map(params, paramfile)
+	if flg_setgroup {
+		set_file_group(paramfile, group)
+
+	}
 }
 
 func get_outputdir(data config_t) string {
