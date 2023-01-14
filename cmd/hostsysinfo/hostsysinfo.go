@@ -198,6 +198,9 @@ func process_get(obj *objtype, data config_t, key string) {
 	
 	paramfile := get_paramfile(data)
 	params := load_props(paramfile)
+	if *flg_lowercase {
+		key = strings.ToLower(key)
+	}
 	value = params[key]
 	if *flg_showkey {
 		msg = fmt.Sprintf("%s: %s", key, value)
